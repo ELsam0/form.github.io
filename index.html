@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TERA ESENCIA | Diagnóstico 360</title>
+<style>
+:root {
+  --navy:#12253b; --blue:#245b83; --light:#f2f5f8;
+  --border:#dce3ea; --text:#243447; --muted:#64748b;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--light); color:var(--text);
+  font:15px/1.5 Arial,sans-serif;
+}
+header { background:var(--navy); color:white; padding:25px 5%; }
+header h1 { margin:0; letter-spacing:2px; }
+header p { margin:6px 0 0; color:#d5e2ee; }
+main { max-width:1100px; margin:25px auto; padding:0 16px; }
+nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+button, .button {
+  border:0; border-radius:7px; padding:11px 15px;
+  cursor:pointer; font-weight:600; background:var(--blue); color:white;
+}
+nav button { background:white; color:var(--navy); border:1px solid var(--border); }
+nav button.active { background:var(--navy); color:white; }
+.card {
+  background:white; border:1px solid var(--border);
+  border-radius:12px; padding:22px; margin-bottom:18px;
+}
+h2,h3 { color:var(--navy); margin-top:0; }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+label { display:block; font-weight:600; margin-bottom:5px; }
+input,select,textarea {
+  width:100%; padding:10px; border:1px solid #cbd5e1;
+  border-radius:6px; background:white; color:var(--text);
+  font:inherit;
+}
+textarea { min-height:80px; resize:vertical; }
+.field { margin-bottom:14px; }
+.help { color:var(--muted); font-size:13px; }
+.hidden { display:none; }
+.criterion { border-top:1px solid var(--border); padding:18px 0; }
+.criterion:first-of-type { border-top:0; }
+.status { font-size:13px; color:var(--muted); }
+.metric { background:#eef4f8; padding:18px; border-radius:9px; }
+.metric strong { display:block; font-size:28px; color:var(--navy); }
+.actions { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
+footer { text-align:center; padding:25px; color:var(--muted); }
+@media(max-width:650px) {
+  .grid { grid-template-columns:1fr; }
+  .card { padding:16px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>TERA ESENCIA</h1>
+  <p>Diagnóstico 360 · Primero entender. Después recomendar. Luego implementar.</p>
+</header>
+
+<main>
+<nav id="tabs">
+  <button class="active" data-tab="f1">1. Conocer e investigar</button>
+  <button data-tab="f2">2. Evaluar y diagnosticar</button>
+  <button data-tab="f3">3. Recomendar y rutear</button>
+  <button data-tab="result">Resultado 360</button>
+</nav>
+
+<section id="f1" class="panel">
+  <div class="card">
+    <h2>Formulario 1 · B1–B3</h2>
+    <p>CONOCER · INVESTIGAR · OBSERVAR</p>
+    <p class="help">Registra el contexto del negocio y la evidencia inicial. No asignes puntuaciones todavía.</p>
+    <div class="grid">
+      <div class="field"><label for="business">Nombre del negocio</label><input id="business" data-save></div>
+      <div class="field"><label for="sector">Sector / actividad</label><input id="sector" data-save></div>
+      <div class="field"><label for="location">Ubicación</label><input id="location" data-save></div>
+      <div class="field"><label for="contact">Contacto y cargo</label><input id="contact" data-save></div>
+      <div class="field"><label for="model">Modelo de negocio</label>
+        <select id="model" data-save>
+          <option value="">Seleccionar</option>
+          <option>B2C</option><option>B2B</option>
+          <option>Mixto</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="field"><label for="age">Antigüedad</label><input id="age" data-save></div>
+    </div>
+    <div class="field"><label for="products">Productos o servicios principales</label><textarea id="products" data-save></textarea></div>
+    <div class="field"><label for="audience">Público objetivo actual</label><textarea id="audience" data-save></textarea></div>
+    <div class="field"><label for="value">Propuesta de valor declarada</label><textarea id="value" data-save></textarea></div>
+    <div class="field"><label for="goals">Objetivos del negocio a 6–12 meses</label><textarea id="goals" data-save></textarea></div>
+    <div class="field"><label for="channels">Canales utilizados y función de cada uno</label><textarea id="channels" data-save></textarea></div>
+    <div class="field"><label for="evidence">Fuentes, observaciones y evidencias iniciales</label><textarea id="evidence" data-save></textarea></div>
+  </div>
+</section>
+
+<section id="f2" class="panel hidden">
+  <div class="card">
+    <h2>Formulario 2 · B4–B6</h2>
+    <p>CONSOLIDAR · EVALUAR · DIAGNOSTICAR</p>
+    <p class="help">Solo puntúa cuando exista evidencia suficiente y el criterio sea aplicable.</p>
+    <div id="criteria"></div>
+  </div>
+</section>
+
+<section id="f3" class="panel hidden">
+  <div class="card">
+    <h2>Formulario 3 · B7–B8</h2>
+    <p>RECOMENDAR · RUTAR / IMPLEMENTAR</p>
+    <div class="field"><label for="diagnosis">Diagnóstico de origen y evidencia</label><textarea id="diagnosis" data-save></textarea></div>
+    <div class="field"><label for="strengths">Fortalezas demostradas</label><textarea id="strengths" data-save></textarea></div>
+    <div class="field"><label for="gaps">Brechas demostradas</label><textarea id="gaps" data-save></textarea></div>
+    <div class="field"><label for="risks">Riesgos identificados</label><textarea id="risks" data-save></textarea></div>
+    <div id="recommendations"></div>
+    <button type="button" id="addRecommendation">Añadir recomendación</button>
+  </div>
+</section>
+
+<section id="result" class="panel hidden">
+  <div class="card">
+    <h2>Resultado 360</h2>
+    <div class="grid">
+      <div class="metric"><span>Índice ESENCIA</span><strong id="index">NO CONCLUYENTE</strong></div>
+      <div class="metric"><span>Clasificación</span><strong id="classification">Pendiente</strong></div>
+      <div class="metric"><span>Criterios puntuados</span><strong id="count">0</strong></div>
+      <div class="metric"><span>Cobertura de criterios</span><strong id="coverage">0%</strong></div>
+    </div>
+    <h3 style="margin-top:22px">Resultados por dimensión</h3>
+    <div id="dimensionResults"></div>
+    <p class="help">Resultado preliminar. La cobertura mínima y la suficiencia de evidencia deben validarse metodológicamente antes de utilizar este índice en informes comerciales.</p>
+    <button type="button" id="calculate">Recalcular resultado</button>
+  </div>
+</section>
+
+<div class="actions">
+  <button type="button" id="save">Guardar en este navegador</button>
+  <button type="button" id="export">Exportar expediente JSON</button>
+  <button type="button" id="import">Importar expediente JSON</button>
+  <input type="file" id="fileInput" accept=".json,application/json" hidden>
+</div>
+<p class="status" id="message" role="status">Los cambios deben guardarse en este navegador.</p>
+</main>
+
+<footer>TERA ESENCIA · La puntuación no es el diagnóstico.</footer>
+
+<script>
+const dimensions = [
+  ["IDENTIDAD E IMAGEN",[
+    "¿La identidad visual y verbal es coherente con la propuesta de valor?",
+    "¿La presentación del negocio comunica claramente lo que ofrece?"
+  ]],
+  ["POSICIONAMIENTO",[
+    "¿Existe una diferenciación demostrable frente a alternativas relevantes?",
+    "¿La percepción del público coincide con el posicionamiento deseado?"
+  ]],
+  ["PRESENCIA DIGITAL",[
+    "¿Los canales digitales utilizados son pertinentes para el público objetivo?",
+    "¿Los canales cumplen su función y permiten verificar sus resultados?"
+  ]],
+  ["MARKETING Y COMUNICACIÓN",[
+    "¿Las acciones de comunicación están vinculadas a objetivos concretos?",
+    "¿Existe evidencia de que los mensajes llegan al público pertinente?"
+  ]],
+  ["ATENCIÓN",[
+    "¿La atención responde a las necesidades y expectativas del cliente?",
+    "¿Se observan tiempos de respuesta y seguimiento adecuados?"
+  ]],
+  ["VENTAS",[
+    "¿Existe un proceso comercial identificable y comprensible?",
+    "¿Se registran oportunidades, conversiones y motivos de pérdida?"
+  ]],
+  ["CUMPLIMIENTO",[
+    "¿El negocio cumple las promesas y condiciones comunicadas al cliente?",
+    "¿Existen evidencias de control de calidad y cumplimiento operativo?"
+  ]],
+  ["FIDELIZACIÓN",[
+    "¿Existe seguimiento pertinente después de la compra?",
+    "¿Se mide la recompra, retención o satisfacción cuando corresponde?"
+  ]],
+  ["REPUTACIÓN Y CRISIS",[
+    "¿Se monitorean opiniones, reclamaciones y señales de riesgo reputacional?",
+    "¿Existe una forma definida de responder y escalar incidentes?"
+  ]],
+  ["CAPACIDAD DE CRECIMIENTO",[
+    "¿La operación puede sostener el crecimiento previsto con sus recursos actuales?",
+    "¿Existen procesos críticos que dependan excesivamente de una sola persona?"
+  ]]
+];
+
+const states = [
+  "Seleccionar estado",
+  "Puntuado (0-5)",
+  "DATO NO DISPONIBLE",
+  "NO OBSERVADO",
+  "NO VERIFICADO",
+  "NO APLICA"
+];
+
+const scoreLabels = [
+  "0 — AUSENTE / CRÍTICO",
+  "1 — MUY DEFICIENTE",
+  "2 — DEFICIENTE",
+  "3 — FUNCIONAL / ACEPTABLE",
+  "4 — BUENO / CONSOLIDADO",
+  "5 — ÓPTIMO / AVANZADO"
+];
+
+const $ = id => document.getElementById(id);
+const criterionList = [];
+let recommendationCount = 0;
+
+function addCriterion(dim, question, n) {
+  const id = "c" + n;
+  criterionList.push({id, dim, question});
+  const div = document.createElement("div");
+  div.className = "criterion";
+  div.innerHTML = `
+    <h3>${dim}</h3>
+    <p>${question}</p>
+    <div class="grid">
+      <div class="field"><label for="${id}_state">Estado de evaluación</label>
+        <select id="${id}_state" data-save>
+          ${states.map(s=>`<option>${s}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field"><label for="${id}_score">Puntuación observada</label>
+        <select id="${id}_score" data-save disabled>
+          <option value="">Sin puntuación</option>
+          ${scoreLabels.map((s,i)=>`<option value="${i}">${s}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field"><label for="${id}_weight">Peso (1–5)</label>
+        <select id="${id}_weight" data-save>
+          <option value="1">1</option><option value="2">2</option>
+          <option value="3" selected>3</option><option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div class="field"><label for="${id}_source">Fuente / evidencia</label>
+        <input id="${id}_source" data-save placeholder="Documento, registro, observación...">
+      </div>
+    </div>
+    <div class="field"><label for="${id}_finding">Hallazgo y fundamento</label>
+      <textarea id="${id}_finding" data-save></textarea>
+    </div>`;
+  $("criteria").appendChild(div);
+
+  const state = $(id+"_state"), score = $(id+"_score");
+  function sync() {
+    const valid = state.value === "Puntuado (0-5)";
+    score.disabled = !valid;
+    if (!valid) score.value = "";
+    updateResult();
+  }
+  state.addEventListener("change",sync);
+  score.addEventListener("change",updateResult);
+  $(id+"_weight").addEventListener("change",updateResult);
+}
+
+let number = 0;
+dimensions.forEach(([dim, questions]) =>
+  questions.forEach(q => addCriterion(dim,q,++number))
+);
+
+function addRecommendation(data={}) {
+  recommendationCount++;
+  const n = recommendationCount;
+  const box = document.createElement("div");
+  box.className = "criterion";
+  box.innerHTML = `
+    <h3>Recomendación ${n}</h3>
+    <div class="field"><label>Hallazgo de origen</label>
+      <textarea data-save data-rec="origin">${data.origin||""}</textarea></div>
+    <div class="field"><label>Acción recomendada</label>
+      <textarea data-save data-rec="action">${data.action||""}</textarea></div>
+    <div class="grid">
+      <div class="field"><label>Fase</label><select data-save data-rec="phase">
+        ${["CORREGIR","RECONSTRUIR","CONECTAR","CONVERTIR","FIDELIZAR","ESCALAR"].map(x=>`<option ${data.phase===x?"selected":""}>${x}</option>`).join("")}
+      </select></div>
+      <div class="field"><label>Ruta</label><select data-save data-rec="route">
+        ${["Intervención TERA","Autogestión","Otro proveedor","No intervenir por ahora","Investigar antes de decidir"].map(x=>`<option ${data.route===x?"selected":""}>${x}</option>`).join("")}
+      </select></div>
+      <div class="field"><label>Responsable</label><input data-save data-rec="owner" value="${data.owner||""}"></div>
+      <div class="field"><label>Plazo</label><input data-save data-rec="deadline" value="${data.deadline||""}"></div>
+    </div>
+    <button type="button" class="remove">Eliminar recomendación</button>`;
+  box.querySelector(".remove").addEventListener("click",()=>box.remove());
+  $("recommendations").appendChild(box);
+}
+$("addRecommendation").addEventListener("click",()=>addRecommendation());
+
+function collect() {
+  const fields = {};
+  document.querySelectorAll("[data-save]").forEach(el=>{
+    if(el.id) fields[el.id] = el.value;
+  });
+  const recommendations = [...document.querySelectorAll("#recommendations .criterion")].map(box=>{
+    const obj={};
+    box.querySelectorAll("[data-rec]").forEach(el=>obj[el.dataset.rec]=el.value);
+    return obj;
+  });
+  return {version:1,updatedAt:new Date().toISOString(),fields,recommendations};
+}
+
+function applyData(data) {
+  Object.entries(data.fields||{}).forEach(([id,value])=>{
+    const el=$(id);
+    if(el) el.value=value;
+  });
+  document.querySelectorAll('[id$="_state"]').forEach(el=>{
+    const score=$(el.id.replace("_state","_score"));
+    if(score) score.disabled=el.value!=="Puntuado (0-5)";
+  });
+  $("recommendations").innerHTML="";
+  recommendationCount=0;
+  (data.recommendations||[]).forEach(addRecommendation);
+  updateResult();
+}
+
+function saveLocal() {
+  localStorage.setItem("tera_esencia_draft",JSON.stringify(collect()));
+  $("message").textContent="Expediente guardado en este navegador.";
+}
+
+function updateResult() {
+  const applicable=criterionList.filter(c=>{
+    const state=$(c.id+"_state").value;
+    return state!=="NO APLICA" && state!=="Seleccionar estado";
+  });
+  const scored=criterionList.filter(c=>
+    $(c.id+"_state").value==="Puntuado (0-5)" &&
+    $(c.id+"_score").value!==""
+  );
+  const coverage=applicable.length ? scored.length/applicable.length*100 : 0;
+  const weightTotal=scored.reduce((s,c)=>s+Number($(c.id+"_weight").value||1),0);
+  const weighted=scored.reduce((s,c)=>
+    s+Number($(c.id+"_score").value)*Number($(c.id+"_weight").value||1),0);
+  const valid=scored.length>0 && coverage>=60 && weightTotal>0;
+  const index=valid ? weighted/weightTotal*20 : null;
+
+  $("count").textContent=scored.length+" / "+criterionList.length;
+  $("coverage").textContent=Math.round(coverage)+"%";
+  $("index").textContent=valid ? index.toFixed(1) : "NO CONCLUYENTE";
+  $("classification").textContent=!valid ? "Pendiente de evidencia" :
+    index<50 ? "CRÍTICO / DEFICIENTE" :
+    index<70 ? "PASABLE" :
+    index<80 ? "MEJORABLE" : "EXCELENTE";
+
+  $("dimensionResults").innerHTML="";
+  dimensions.forEach(([dim])=>{
+    const items=criterionList.filter(c=>c.dim===dim &&
+      $(c.id+"_state").value==="Puntuado (0-5)" &&
+      $(c.id+"_score").value!=="");
+    const w=items.reduce((s,c)=>s+Number($(c.id+"_weight").value||1),0);
+    const value=w ? items.reduce((s,c)=>s+Number($(c.id+"_score").value)*Number($(c.id+"_weight").value||1),0)/w*20 : null;
+    const row=document.createElement("p");
+    row.textContent=dim+": "+(value===null?"Sin datos suficientes":value.toFixed(1)+"/100");
+    $("dimensionResults").appendChild(row);
+  });
+}
+
+$("tabs").addEventListener("click",e=>{
+  const btn=e.target.closest("button[data-tab]");
+  if(!btn)return;
+  document.querySelectorAll(".panel").forEach(p=>p.classList.add("hidden"));
+  $(btn.dataset.tab).classList.remove("hidden");
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("active",b===btn));
+  if(btn.dataset.tab==="result")updateResult();
+});
+
+$("save").addEventListener("click",saveLocal);
+$("calculate").addEventListener("click",updateResult);
+
+$("export").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(collect(),null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="TERA_ESENCIA_expediente.json";a.click();
+  URL.revokeObjectURL(url);
+});
+
+$("import").addEventListener("click",()=>$("fileInput").click());
+$("fileInput").addEventListener("change",async e=>{
+  const file=e.target.files[0];if(!file)return;
+  try {
+    const data=JSON.parse(await file.text());
+    applyData(data);
+    $("message").textContent="Expediente importado. Guarda para conservarlo en este navegador.";
+  } catch {
+    $("message").textContent="No se pudo importar: el archivo JSON no es válido.";
+  }
+});
+
+try {
+  const draft=localStorage.getItem("tera_esencia_draft");
+  if(draft)applyData(JSON.parse(draft));
+} catch(e) {
+  $("message").textContent="No se pudo recuperar el borrador guardado.";
+}
+updateResult();
+</script>
+</body>
+</html>
